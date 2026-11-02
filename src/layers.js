@@ -10,7 +10,7 @@ document.querySelector('header .brand').href='/';
 document.querySelector('header nav').innerHTML=chapters.map(c=>`<a href="/${c.id}.html" ${current===c?'class="active" aria-current="page"':''}>${c.label}${c.id==='whats-next'?'<i></i>':''}</a>`).join('');
 document.querySelector('header .visit').href='/mall.html#visit';
 document.querySelectorAll('header nav a').forEach(a=>a.onclick=()=>document.body.classList.remove('menu-open'));
-const photoMap={mall:'/images/mall-atrium.png',directory:'/images/mall-atrium.png',events:'/images/mall-exterior.png',shopping:'/images/mall-exterior.png'};
+const photoMap={mall:'/images/mall-atrium.png',directory:'/images/mall-retail.png',events:'/images/mall-exterior.png',shopping:'/images/mall-retail.png'};
 if(isHome){
  document.body.classList.add('experience-home');
  document.querySelector('main').hidden=true;document.querySelector('footer').hidden=true;
