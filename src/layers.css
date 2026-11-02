@@ -5,3 +5,6 @@
 
 .chapter-switcher a{display:inline-block}.chapter-switcher a:hover{color:var(--orange);border-bottom-color:var(--orange)}
 @media(max-width:600px){.chapter-switcher a{display:flex}}
+/* Draw navigation icons with CSS so they do not depend on system symbol fonts. */
+.chapter-cta>span,.photo-enter>b,.visit>span{position:relative;font-size:0;width:25px;height:25px}.photo-enter>b{width:40px;height:40px}.chapter-cta>span:before,.photo-enter>b:before,.visit>span:before{content:'';position:absolute;width:15px;border-top:1px solid currentColor;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-45deg)}.chapter-cta>span:after,.photo-enter>b:after,.visit>span:after{content:'';position:absolute;width:9px;height:9px;border-top:1px solid currentColor;border-right:1px solid currentColor;left:50%;top:50%;transform:translate(-17%,-83%)}
+@media(max-width:600px){.photo-enter>b{width:30px;height:30px}}
