@@ -36,13 +36,20 @@ The mall page includes a concise history and a reference link. Historical inform
 
 `src/experience.js` and `src/experience.css` add a full-screen sticky photographic journey with independent background zoom, foreground travel, and moving display typography. Hero cards have stronger scroll depth and pointer parallax. Supporting photo stories use opposing scroll rates. Reduced-motion preferences retain content while disabling the immersive movement.
 
-The home page and all chapter pages include a Google Maps embed querying **23 Paskal Shopping Center Bandung**, plus Google Maps location and directions links. No API key is required. External map content needs Internet access; the embed and route targets were checked, but Google's external content could not be verified from this environment. Existing links remain available alongside the map.
+All chapter pages include a Google Maps embed querying **23 Paskal Shopping Center Bandung**, plus Google Maps location and directions links. No API key is required. External map content needs Internet access; the embed and route targets were checked, but Google's external content could not be verified from this environment. Existing links remain available alongside the map.
 
 Copy spacing was checked at 1440, 1024, 768, 390, and 320 pixel widths. The site's mall photographs are AI-generated concepts, and the floor plans remain the user-authorized dummy layouts.
 
 
 ## Visitor tools
 
-`src/customer.js` adds a task-oriented home hub, a cross-floor tenant finder available from every page, category and keyword search (including Indonesian intent words such as kopi/sepatu), saved places in localStorage, floor/unit deep links, FAQ, and copy-address buttons with a selectable-text fallback. Saved places require no account and stay in the current browser; storage failures fall back to the current session.
+`src/customer.js` adds a cross-floor tenant finder on chapter pages, category and keyword search (including Indonesian intent words such as kopi/sepatu), saved places in localStorage, floor/unit deep links, chapter-page FAQ, and copy-address buttons with a selectable-text fallback. Saved places require no account and stay in the current browser; storage failures fall back to the current session.
 
 A link such as `/directory.html?floor=1&unit=102#directory` selects the corresponding floor and highlights its unit. Unknown parameters are ignored. Hours are deliberately not invented; the FAQ directs visitors to check current information in Google Maps. Tenant data remains dummy.
+
+
+## Clean chapter layout
+
+The home page now contains only the four photographic layer introductions and a compact footer. The visit hub, logos, history, maps, FAQ and photo galleries are not rendered on the home page. The Mall contains history, the immersive photo journey, photography, FAQ and visitor information; Directory contains cross-floor search, saved-place controls, floor plans and information; other chapter pages retain their content, FAQ and visitor maps.
+
+Hero parallax uses time-based exponential interpolation and continuous card transforms. Pointer movement is damped and subtle. Its animation loop stops when settled, keeps native page scrolling, and honors reduced-motion changes. Scroll progress is calculated from the actual stage height so each layer remains reachable across screen sizes.

@@ -16,11 +16,67 @@ if(isHome){
  document.querySelector('main').hidden=true;document.querySelector('footer').hidden=true;
  const experience=document.createElement('div');experience.id='layer-experience';experience.innerHTML=`<div class="layer-sticky"><div class="experience-top"><span><i></i> FOUR LAYERS. ENDLESS POSSIBILITIES.</span><span>23 PASKAL · BANDUNG</span></div><span class="depth-number" aria-hidden="true">23</span><div class="layer-copy">${chapters.map((c,i)=>`<div class="chapter-copy ${i===0?'is-active':''}" data-copy="${i}" ${i?'inert':''}><div class="chapter-kicker">${c.number} / 04 &nbsp; — &nbsp; ${c.label.toUpperCase()}</div><h1>${c.title}</h1><p>${c.desc}</p><a class="chapter-cta" href="/${c.id}.html">${c.cta}<span>↗</span></a></div>`).join('')}</div><div class="photo-stack">${chapters.map((c,i)=>`<a href="/${c.id}.html" class="photo-layer" data-layer="${i}" aria-label="Buka halaman ${c.label}" style="--card-color:${c.color};--i:${i}"><div class="layer-photo" style="background-image:url('${photoMap[c.image]}')"></div><div class="photo-grain"></div><div class="photo-topline"><span>${c.tag}</span><span>${c.number} / 04</span></div><span class="photo-word">${c.label}</span><span class="photo-enter">Explore this layer <b>↗</b></span><span class="photo-note">ILLUSTRATIVE MALL PHOTOGRAPHY</span></a>`).join('')}</div><div class="experience-bottom"><div class="chapter-switcher" aria-label="Pilih layer">${chapters.map((c,i)=>`<a href="/${c.id}.html" data-goto="${i}" class="${i===0?'is-active':''}"><span>${c.number}</span>${c.label}</a>`).join('')}</div><span class="scroll-hint">SCROLL TO UNCOVER <span>↓</span></span></div><div class="scroll-progress"><i></i></div></div>`;
  document.body.append(experience);
- const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;let active=-1,frame=false;const cards=[...document.querySelectorAll('.photo-layer')];
- function update(){const unit=innerHeight*.95;const progress=Math.max(0,Math.min(3,(scrollY-experience.offsetTop)/unit));const next=Math.min(3,Math.floor(progress+.28));if(next!==active){active=next;document.querySelectorAll('[data-copy]').forEach((el,i)=>{el.classList.toggle('is-active',i===active);el.inert=i!==active;});document.querySelectorAll('[data-goto]').forEach((el,i)=>{el.classList.toggle('is-active',i===active);el.setAttribute('aria-pressed',String(i===active));});}
- cards.forEach((card,i)=>{const before=i<active;const depth=i-active;const compact=innerWidth<=600;const outgoing=Math.max(0,progress-i);const incoming=Math.max(0,Math.min(1,progress-(i-1)));card.style.zIndex=String(10-i);card.style.opacity=before?'0':'1';card.style.pointerEvents=i===active?'auto':'none';card.tabIndex=i===active?0:-1;if(reduce){card.style.transform=`translateY(${depth*16}px) scale(${1-depth*.035})`;return;}card.style.transform=before?`translate3d(0,-115%,0) rotate(-9deg) scale(.85)`:`translate3d(${depth*(compact?8:25)}px,${depth*(compact?20:48)-outgoing*(compact?100:200)}px,${-depth*(compact?90:140)}px) rotate(${depth*(compact?2:4)-outgoing*12}deg) scale(${1-depth*.055})`;card.querySelector('.layer-photo').style.transform=`scale(${1.18+outgoing*.16}) translateY(${Math.min(.8,outgoing)*130-incoming*25}px)`;});document.querySelector('.depth-number').style.transform=reduce?'none':`translateY(${-progress*75}px) rotate(${-progress*5}deg)`;document.querySelector('.scroll-progress i').style.width=`${(progress+1)/4*100}%`;frame=false;}
- addEventListener('scroll',()=>{if(!frame){frame=true;requestAnimationFrame(update);}},{passive:true});addEventListener('resize',update);
- document.querySelector('.photo-stack').addEventListener('pointermove',e=>{if(reduce||e.pointerType==='touch')return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--pointer-x',`${(e.clientX-r.left-r.width/2)*.06}px`);e.currentTarget.style.setProperty('--pointer-y',`${(e.clientY-r.top-r.height/2)*.06}px`);});document.querySelector('.photo-stack').onpointerleave=e=>{e.currentTarget.style.setProperty('--pointer-x','0px');e.currentTarget.style.setProperty('--pointer-y','0px');};update();
+ const motion = matchMedia('(prefers-reduced-motion: reduce)');
+ const cards = [...document.querySelectorAll('.photo-layer')];
+ const stack = document.querySelector('.photo-stack');
+ let active = -1, progress = 0, target = 0, frame = 0, lastTime = 0;
+ let pointerX = 0, pointerY = 0, targetX = 0, targetY = 0;
+ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+ const smoothstep = n => n * n * (3 - 2 * n);
+ function readTarget() {
+   const range = Math.max(1, experience.offsetHeight - document.querySelector('.layer-sticky').offsetHeight);
+   target = clamp((scrollY - experience.offsetTop) / range * 3, 0, 3);
+   schedule();
+ }
+ function schedule() { if (!frame) frame = requestAnimationFrame(draw); }
+ function draw(time) {
+   const dt = lastTime ? Math.min(64, time - lastTime) : 16;
+   lastTime = time;
+   const blend = motion.matches ? 1 : 1 - Math.exp(-dt / 105);
+   progress += (target - progress) * blend;
+   pointerX += (targetX - pointerX) * blend;
+   pointerY += (targetY - pointerY) * blend;
+   if (Math.abs(target - progress) < .0004) progress = target;
+   const next = clamp(Math.round(progress), 0, 3);
+   if (next !== active) {
+     active = next;
+     document.querySelectorAll('[data-copy]').forEach((el,i) => { el.classList.toggle('is-active', i === active); el.inert = i !== active; });
+     document.querySelectorAll('[data-goto]').forEach((el,i) => { el.classList.toggle('is-active', i === active); if(i===active)el.setAttribute('aria-current','true');else el.removeAttribute('aria-current'); });
+   }
+   const compact = innerWidth <= 600;
+   cards.forEach((card, i) => {
+     const depth = Math.max(0, i - progress);
+     const departing = smoothstep(clamp(progress - i, 0, 1));
+     const fade = smoothstep(clamp((progress - i - .15) / .8, 0, 1));
+     card.style.zIndex = String(10 - i);
+     card.style.opacity = String(1 - fade);
+     card.style.pointerEvents = i === active ? 'auto' : 'none';
+     card.tabIndex = i === active ? 0 : -1;
+     card.setAttribute('aria-hidden',String(i!==active));
+     card.style.transform = motion.matches ? `translateY(${Math.max(0,i-active)*12}px) scale(${1-Math.max(0,i-active)*.025})` : `translate3d(${depth*(compact?5:12)}px,${depth*(compact?14:28)-departing*(compact?230:480)}px,${-depth*65}px) rotate(${depth*1.4-departing*3}deg) scale(${1-depth*.035-departing*.06})`;
+     card.querySelector('.layer-photo').style.transform = motion.matches ? 'none' : `scale(1.12) translateY(${(progress-i)*24}px)`;
+   });
+   stack.style.setProperty('--pointer-x',`${motion.matches?0:pointerX}px`);
+   stack.style.setProperty('--pointer-y',`${motion.matches?0:pointerY}px`);
+   document.querySelector('.depth-number').style.transform = motion.matches ? 'none' : `translateY(${-progress*30}px)`;
+   document.querySelector('.scroll-progress i').style.width = `${(progress+1)/4*100}%`;
+   frame = 0;
+   if (Math.abs(target-progress)>.0001 || Math.abs(targetX-pointerX)>.05 || Math.abs(targetY-pointerY)>.05) schedule();
+   else lastTime = 0;
+ }
+ addEventListener('scroll', readTarget, {passive:true});
+ addEventListener('resize', readTarget);
+ motion.addEventListener('change',readTarget);
+ stack.addEventListener('pointermove',e=>{
+   if(motion.matches || e.pointerType==='touch')return;
+   const rect=stack.getBoundingClientRect();
+   targetX=(e.clientX-rect.left-rect.width/2)*.018;
+   targetY=(e.clientY-rect.top-rect.height/2)*.018;
+   schedule();
+ });
+ stack.addEventListener('pointerleave',()=>{targetX=0;targetY=0;schedule();});
+ readTarget();
+
 }else{
  document.body.classList.add('chapter-page');document.title=`${current.label} — 23 Paskal`;
  document.querySelectorAll('main > section').forEach(s=>{s.hidden=s.id!==current.section&&s.id!=='visit';});

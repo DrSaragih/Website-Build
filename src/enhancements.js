@@ -30,16 +30,6 @@ if (path.endsWith('/mall.html')) {
   section.className = 'section mall-story';
   section.innerHTML = historyMarkup;
   section.after(brandSection());
-} else if (!/\/(directory|whats-next|shopping-program)\.html$/.test(path)) {
-  const section = brandSection();
-  document.querySelector('#layer-experience').after(section);
-  const history = document.createElement('section');
-  history.className = 'home-history section';
-  history.innerHTML = `<div><span class="eyebrow">A PART OF BANDUNG, SINCE 2017</span><h2>Kota punya cerita.<br><em>Kita bagian darinya.</em></h2><p>Kenali perjalanan 23 Paskal dan tempatnya di tengah kota Bandung.</p><a class="text-link" href="/mall.html">Discover our story <span>↗</span></a></div><figure><img src="/images/mall-exterior.png" alt="Ilustrasi fotografis eksterior mall tropis saat senja" loading="lazy"><figcaption>Ilustrasi konseptual, bukan dokumentasi bangunan asli.</figcaption></figure>`;
-  section.after(history);
-  const footer = document.querySelector('footer');
-  footer.hidden = false;
-  document.body.append(footer);
 }
 
 if (path.endsWith('/directory.html')) {

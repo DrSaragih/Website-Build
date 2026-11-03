@@ -48,20 +48,25 @@ headerButton.onclick = openSearch;
 document.querySelector('header .visit').before(headerButton);
 
 const home = document.querySelector('#home-content');
-if (home) {
-  const hub = document.createElement('section');
-  hub.className = 'visitor-hub';
-  hub.innerHTML = `<div><span class="eyebrow">SELAMAT DATANG DI 23 PASKAL</span><h1>Harimu, lebih mudah<br><em>direncanakan.</em></h1><p>Cari tempat favorit, cek lantainya, lalu tentukan langkahmu.</p></div><div class="visitor-actions"><button class="hub-search">Cari tenant, kuliner, atau gaya favorit <span>→</span></button><a href="/directory.html#directory"><b>Directory & denah</b><span>Pilih lantai dan temukan lokasinya ↗</span></a><a href="#find-us"><b>Lokasi & rute</b><span>Langsung menuju Google Maps ↗</span></a><a href="#bantuan"><b>Sebelum berkunjung</b><span>Jawaban cepat untuk rencanamu ↓</span></a></div>`;
-  home.prepend(hub);
-  hub.querySelector('.hub-search').onclick = openSearch;
+if (location.pathname.endsWith('/directory.html')) {
+  const tools = document.createElement('div');
+  tools.className = 'directory-quick-tools';
+  tools.innerHTML = '<p>Cari lintas lantai atau lanjutkan daftar tujuanmu.</p><button class="open-all-tenants">Cari semua lantai</button><button class="open-saved-tenants">Tujuan tersimpan</button>';
+  document.querySelector('.directory-heading').after(tools);
+  tools.querySelector('.open-all-tenants').onclick = openSearch;
+  tools.querySelector('.open-saved-tenants').onclick = () => { onlySaved = true; search.querySelector('#saved-filter').setAttribute('aria-pressed', 'true'); openSearch(); };
 }
 
+if (!home) {
 const faq = document.createElement('section');
 faq.id = 'bantuan';
 faq.className = 'customer-faq section';
 faq.innerHTML = `<div><span class="eyebrow">BEFORE YOU GO</span><h2>Informasi jelas.<br><em>Kunjungan nyaman.</em></h2><p>Hal-hal kecil yang membantu merencanakan hari.</p><button class="faq-search">Cari tenant sekarang ↗</button></div><div class="faq-items"><details><summary>Di mana lokasi 23 Paskal?</summary><p>${address}.</p><a href="https://www.google.com/maps/dir/?api=1&destination=23+Paskal+Shopping+Center+Bandung" target="_blank" rel="noopener noreferrer">Buka petunjuk arah di Google Maps ↗</a></details><details><summary>Bagaimana menemukan tenant dan lantainya?</summary><p>Gunakan “Cari tenant” untuk mencari di semua lantai. Pilih “Lihat di denah” untuk membuka lantai dan menyorot unit yang dipilih. Directory ini menggunakan data dummy.</p><a href="/directory.html#directory">Buka directory & denah ↗</a></details><details><summary>Bisakah saya menyimpan tenant pilihan?</summary><p>Bisa. Tekan “Simpan” di hasil pencarian, lalu buka tab “Tersimpan”. Daftar disimpan pada browser perangkat ini, tanpa membuat akun.</p></details><details><summary>Jam berapa mall buka dan tutup?</summary><p>Jam operasional resmi belum ditambahkan ke website ini. Periksa informasi terbaru sebelum berangkat, terutama saat hari libur.</p><a href="https://www.google.com/maps/search/?api=1&query=23+Paskal+Shopping+Center+Bandung" target="_blank" rel="noopener noreferrer">Periksa informasi di Google Maps ↗</a></details><details><summary>Apakah denah, tenant, dan acara sudah resmi?</summary><p>Website ini masih berupa demo. Penempatan tenant dan denah bersifat ilustratif; acara serta program belanja masih konsep. Foto merupakan visual AI, bukan dokumentasi asli mall.</p></details></div>`;
 faq.querySelector('.faq-search').onclick = openSearch;
-(home || document.querySelector('main')).append(faq);
+const visit = document.querySelector('main > #visit');
+visit.before(faq);
+}
+
 
 document.querySelectorAll('.visit-address').forEach(section => {
   const button = document.createElement('button');
@@ -87,3 +92,5 @@ if (directory) {
   }
   if (location.hash === '#directory') requestAnimationFrame(() => directory.scrollIntoView());
 }
+
+import "./clean.css";

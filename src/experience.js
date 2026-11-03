@@ -20,26 +20,20 @@ function photoStories() {
 }
 
 if (isHome) {
+  const home = document.createElement('main');
+  home.id = 'home-content';
+  const experience = document.querySelector('#layer-experience');
+  experience.before(home);
+  home.append(experience);
+  const footer = document.querySelector('footer');
+  footer.hidden = false;
+  document.body.append(footer);
+} else if (location.pathname.endsWith('/mall.html')) {
   const journey = document.createElement('section');
   journey.className = 'journey-scroll';
-  journey.setAttribute('aria-label', 'Pengalaman parallax 23 Paskal');
-  journey.innerHTML = `<div class="journey-stage"><img class="journey-background" src="/images/mall-garden.png" alt="" loading="lazy"><div class="journey-shade"></div><span class="journey-word" aria-hidden="true">STAY A LITTLE LONGER</span><div class="journey-copy"><span class="eyebrow">LEAVE THE ORDINARY AT THE DOOR</span><h2>Rencananya<br>sebentar.<br><em>Betahnya lama.</em></h2><p>Ada tempat yang kita datangi.<br>Ada tempat yang ingin kita datangi lagi.</p><a class="journey-link" href="/mall.html">Rasakan sisi lain harimu ↗</a></div><div class="journey-portrait"><img src="/images/mall-retail.png" alt="Ilustrasi suasana berjalan santai di dalam mall" loading="lazy"><span>A DAY, WELL SPENT.</span></div><div class="journey-closeup"><img src="/images/mall-cafe.png" alt="Ilustrasi kopi dan hidangan untuk jeda sore" loading="lazy"></div><span class="journey-counter" aria-hidden="true">23 / PASKAL</span></div>`;
-  document.querySelector('#layer-experience').after(journey);
-  const stories = photoStories();
-  document.querySelector('.home-history').after(stories);
-  const visit = document.createElement('section');
-  visit.id = 'find-us';
-  visit.className = 'section visit-map-section';
-  visit.innerHTML = visitMarkup();
-  stories.after(visit);
-  document.querySelector('header .visit').href = '#find-us';
-  const homeContent = document.createElement('main');
-  homeContent.id = 'home-content';
-  const experience = document.querySelector('#layer-experience');
-  experience.before(homeContent);
-  [experience, journey, document.querySelector('.brand-section'), document.querySelector('.home-history'), stories, visit].forEach(section => homeContent.append(section));
-} else if (location.pathname.endsWith('/mall.html')) {
-  document.querySelector('#visit').before(photoStories());
+  journey.setAttribute('aria-label', 'Jeda di tengah kota Bandung');
+  journey.innerHTML = `<div class="journey-stage"><img class="journey-background" src="/images/mall-garden.png" alt="" loading="lazy"><div class="journey-shade"></div><span class="journey-word" aria-hidden="true">STAY A LITTLE LONGER</span><div class="journey-copy"><span class="eyebrow">RUANG UNTUK JEDA</span><h2>Rencananya<br>sebentar.<br><em>Betahnya lama.</em></h2><p>Ada tempat yang kita datangi.<br>Ada tempat yang ingin kita datangi lagi.</p><a class="journey-link" href="/directory.html">Temukan tempat favoritmu ↗</a></div><div class="journey-portrait"><img src="/images/mall-retail.png" alt="Ilustrasi suasana berjalan santai di dalam mall" loading="lazy"><span>A DAY, WELL SPENT.</span></div><div class="journey-closeup"><img src="/images/mall-cafe.png" alt="Ilustrasi kopi dan hidangan untuk jeda sore" loading="lazy"></div><span class="journey-counter" aria-hidden="true">23 / PASKAL</span></div>`;
+  document.querySelector('#visit').before(journey, photoStories());
 }
 
 // Keep original event interactions while giving their concepts photographic context.
