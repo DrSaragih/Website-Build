@@ -39,3 +39,10 @@ The mall page includes a concise history and a reference link. Historical inform
 The home page and all chapter pages include a Google Maps embed querying **23 Paskal Shopping Center Bandung**, plus Google Maps location and directions links. No API key is required. External map content needs Internet access; the embed and route targets were checked, but Google's external content could not be verified from this environment. Existing links remain available alongside the map.
 
 Copy spacing was checked at 1440, 1024, 768, 390, and 320 pixel widths. The site's mall photographs are AI-generated concepts, and the floor plans remain the user-authorized dummy layouts.
+
+
+## Visitor tools
+
+`src/customer.js` adds a task-oriented home hub, a cross-floor tenant finder available from every page, category and keyword search (including Indonesian intent words such as kopi/sepatu), saved places in localStorage, floor/unit deep links, FAQ, and copy-address buttons with a selectable-text fallback. Saved places require no account and stay in the current browser; storage failures fall back to the current session.
+
+A link such as `/directory.html?floor=1&unit=102#directory` selects the corresponding floor and highlights its unit. Unknown parameters are ignored. Hours are deliberately not invented; the FAQ directs visitors to check current information in Google Maps. Tenant data remains dummy.
