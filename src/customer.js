@@ -90,6 +90,8 @@ if (directory) {
     directory.querySelector(`[data-floor="${floor.id}"]`).click();
     if (floor.units.some(unit => unit.id === params.get('unit'))) directory.querySelector(`#floor-plan [data-unit="${params.get('unit')}"]`).click();
   }
+  const requestedCategory = params.get('category');
+  if (['dining', 'fashion', 'lifestyle'].includes(requestedCategory)) directory.querySelector(`[data-category="${requestedCategory}"]`)?.click();
   if (location.hash === '#directory') requestAnimationFrame(() => directory.scrollIntoView());
 }
 

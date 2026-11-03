@@ -15,7 +15,7 @@ document.querySelectorAll('main > #visit').forEach(section => {
 function photoStories() {
   const section = document.createElement('section');
   section.className = 'photo-stories section';
-  section.innerHTML = `<div class="stories-heading"><span class="eyebrow">THE ART OF A GOOD DAY</span><h2>Tak harus jauh.<br><em>Cukup terasa berbeda.</em></h2><p>Secangkir yang menghangatkan obrolan. Sudut hijau yang menenangkan pikiran. Kadang, hari terbaik dimulai tanpa rencana besar.</p></div><div class="story-photo-grid"><a class="story-photo story-photo-tall" href="/directory.html"><div class="photo-window"><img src="/images/mall-cafe.png" alt="Ilustrasi fotografis kopi dan hidangan di kafe mall" loading="lazy" data-scene-depth="0.16"></div><span class="photo-index">01 / SAVOR</span><h3>Satu kopi. Obrolan berjam-jam.</h3><p>Temukan tempat untuk rasa baru dan cerita yang belum selesai.</p><span class="story-link">Jelajahi food & drink ↗</span></a><a class="story-photo story-photo-offset" href="/mall.html"><div class="photo-window"><img src="/images/mall-garden.png" alt="Ilustrasi fotografis taman teras mall tropis pada sore hari" loading="lazy" data-scene-depth="-0.12"></div><span class="photo-index">02 / SLOW DOWN</span><h3>Beri harimu ruang bernapas.</h3><p>Pelankan langkah. Nikmati jeda. Lanjutkan hari dengan rasa berbeda.</p><span class="story-link">Kenali cerita 23 Paskal ↗</span></a></div><small class="photo-disclosure">Visual fotografis konseptual, bukan dokumentasi asli 23 Paskal.</small>`;
+  section.innerHTML = `<div class="stories-heading"><span class="eyebrow">THE ART OF A GOOD DAY</span><h2>Tak harus jauh.<br><em>Cukup terasa berbeda.</em></h2><p>Secangkir yang menghangatkan obrolan. Sudut hijau yang menenangkan pikiran. Kadang, hari terbaik dimulai tanpa rencana besar.</p></div><div class="story-photo-grid"><a class="story-photo story-photo-tall" href="/directory.html"><div class="photo-window"><img src="/images/mall-cafe.webp" alt="Ilustrasi fotografis kopi dan hidangan di kafe mall" loading="lazy" data-scene-depth="0.16"></div><span class="photo-index">01 / SAVOR</span><h3>Satu kopi. Obrolan berjam-jam.</h3><p>Temukan tempat untuk rasa baru dan cerita yang belum selesai.</p><span class="story-link">Jelajahi food & drink ↗</span></a><a class="story-photo story-photo-offset" href="/mall.html"><div class="photo-window"><img src="/images/mall-garden.webp" alt="Ilustrasi fotografis taman teras mall tropis pada sore hari" loading="lazy" data-scene-depth="-0.12"></div><span class="photo-index">02 / SLOW DOWN</span><h3>Beri harimu ruang bernapas.</h3><p>Pelankan langkah. Nikmati jeda. Lanjutkan hari dengan rasa berbeda.</p><span class="story-link">Kenali cerita 23 Paskal ↗</span></a></div><small class="photo-disclosure">Visual fotografis konseptual, bukan dokumentasi asli 23 Paskal.</small>`;
   return section;
 }
 
@@ -32,7 +32,7 @@ if (isHome) {
   const journey = document.createElement('section');
   journey.className = 'journey-scroll';
   journey.setAttribute('aria-label', 'Jeda di tengah kota Bandung');
-  journey.innerHTML = `<div class="journey-stage"><img class="journey-background" src="/images/mall-garden.png" alt="" loading="lazy"><div class="journey-shade"></div><span class="journey-word" aria-hidden="true">STAY A LITTLE LONGER</span><div class="journey-copy"><span class="eyebrow">RUANG UNTUK JEDA</span><h2>Rencananya<br>sebentar.<br><em>Betahnya lama.</em></h2><p>Ada tempat yang kita datangi.<br>Ada tempat yang ingin kita datangi lagi.</p><a class="journey-link" href="/directory.html">Temukan tempat favoritmu ↗</a></div><div class="journey-portrait"><img src="/images/mall-retail.png" alt="Ilustrasi suasana berjalan santai di dalam mall" loading="lazy"><span>A DAY, WELL SPENT.</span></div><div class="journey-closeup"><img src="/images/mall-cafe.png" alt="Ilustrasi kopi dan hidangan untuk jeda sore" loading="lazy"></div><span class="journey-counter" aria-hidden="true">23 / PASKAL</span></div>`;
+  journey.innerHTML = `<div class="journey-stage"><img class="journey-background" src="/images/mall-garden.webp" alt="" loading="lazy"><div class="journey-shade"></div><span class="journey-word" aria-hidden="true">STAY A LITTLE LONGER</span><div class="journey-copy"><span class="eyebrow">RUANG UNTUK JEDA</span><h2>Rencananya<br>sebentar.<br><em>Betahnya lama.</em></h2><p>Ada tempat yang kita datangi.<br>Ada tempat yang ingin kita datangi lagi.</p><a class="journey-link" href="/directory.html">Temukan tempat favoritmu ↗</a></div><div class="journey-portrait"><img src="/images/mall-retail.webp" alt="Ilustrasi suasana berjalan santai di dalam mall" loading="lazy"><span>A DAY, WELL SPENT.</span></div><div class="journey-closeup"><img src="/images/mall-cafe.webp" alt="Ilustrasi kopi dan hidangan untuk jeda sore" loading="lazy"></div><span class="journey-counter" aria-hidden="true">23 / PASKAL</span></div>`;
   document.querySelector('#visit').before(journey, photoStories());
 }
 
@@ -45,12 +45,17 @@ if (!reducedMotion.matches) {
   const depthPhotos = [...document.querySelectorAll('[data-scene-depth]')];
   const banner = document.querySelector('.page-banner');
   let requested = false;
+  let visualScroll = scrollY, previousTime = 0;
   const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
-  function draw() {
+  function draw(time = performance.now()) {
+    const elapsed = previousTime ? Math.min(64, time - previousTime) : 16;
+    previousTime = time;
+    visualScroll += (scrollY - visualScroll) * (1 - Math.exp(-elapsed / 115));
+    const lag = scrollY - visualScroll;
     if (journey) {
       const rect = journey.getBoundingClientRect();
       if (rect.bottom > 0 && rect.top < innerHeight) {
-        const progress = clamp(-rect.top / Math.max(1, journey.offsetHeight - innerHeight), 0, 1);
+        const progress = clamp(-(rect.top + lag) / Math.max(1, journey.offsetHeight - innerHeight), 0, 1);
         journey.querySelector('.journey-background').style.transform = `scale(${1.2 - progress * .14}) translateY(${progress * -100}px)`;
         const mobile = innerWidth <= 600;
         journey.querySelector('.journey-portrait').style.transform = `translateY(${mobile ? 80 - progress * 130 : 140 - progress * 300}px) rotate(${5 - progress * 9}deg)`;
@@ -62,15 +67,17 @@ if (!reducedMotion.matches) {
     depthPhotos.forEach(photo => {
       const rect = photo.parentElement.getBoundingClientRect();
       if (rect.bottom > 0 && rect.top < innerHeight) {
-        const shift = clamp((innerHeight / 2 - rect.top - rect.height / 2) * Number(photo.dataset.sceneDepth), -85, 85);
+        const shift = clamp((innerHeight / 2 - (rect.top + lag) - rect.height / 2) * Number(photo.dataset.sceneDepth), -85, 85);
         photo.style.transform = `scale(1.2) translateY(${shift}px)`;
       }
     });
     if (banner) {
       const rect = banner.getBoundingClientRect();
-      if (rect.bottom > 0) banner.querySelector('img').style.transform = `scale(1.12) translateY(${clamp(-rect.top * .3, 0, 170)}px)`;
+      if (rect.bottom > 0) banner.querySelector('img').style.transform = `scale(1.12) translateY(${clamp(-(rect.top + lag) * .3, 0, 170)}px)`;
     }
     requested = false;
+    if (Math.abs(scrollY - visualScroll) > .1) { requested = true; requestAnimationFrame(draw); }
+    else previousTime = 0;
   }
   addEventListener('scroll', () => { if (!requested) { requested = true; requestAnimationFrame(draw); } }, { passive: true });
   addEventListener('resize', draw);

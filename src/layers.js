@@ -10,7 +10,7 @@ document.querySelector('header .brand').href='/';
 document.querySelector('header nav').innerHTML=chapters.map(c=>`<a href="/${c.id}.html" ${current===c?'class="active" aria-current="page"':''}>${c.label}${c.id==='whats-next'?'<i></i>':''}</a>`).join('');
 document.querySelector('header .visit').href='/mall.html#visit';
 document.querySelectorAll('header nav a').forEach(a=>a.onclick=()=>document.body.classList.remove('menu-open'));
-const photoMap={mall:'/images/mall-atrium.png',directory:'/images/mall-retail.png',events:'/images/mall-garden.png',shopping:'/images/mall-cafe.png'};
+const photoMap={mall:'/images/mall-atrium.webp',directory:'/images/mall-retail.webp',events:'/images/mall-community.webp',shopping:'/images/mall-shopping.webp'};
 if(isHome){
  document.body.classList.add('experience-home');
  document.querySelector('main').hidden=true;document.querySelector('footer').hidden=true;
@@ -80,7 +80,8 @@ if(isHome){
 }else{
  document.body.classList.add('chapter-page');document.title=`${current.label} — 23 Paskal`;
  document.querySelectorAll('main > section').forEach(s=>{s.hidden=s.id!==current.section&&s.id!=='visit';});
- const banner=document.createElement('section');banner.className='page-banner';banner.innerHTML=`<img src="${photoMap[current.image]}" alt="Ilustrasi fotografis interior mall modern"/><div class="page-banner-shade"></div><a class="back-experience" href="/">← Back to the layers</a><div class="page-banner-content"><span>${current.number} / 04 — ${current.tag}</span><h1>${current.title}</h1><p>${current.desc}</p></div><a href="#${current.section}" class="page-down" aria-label="Jelajahi halaman">↓</a>`;document.querySelector('main').prepend(banner);
+ const photoAlt={mall:'Ilustrasi atrium mall tropis',directory:'Ilustrasi koridor retail mall',events:'Ilustrasi pertunjukan musik komunitas di mall',shopping:'Ilustrasi tas belanja dan pengalaman retail'};
+ const banner=document.createElement('section');banner.className='page-banner';banner.innerHTML=`<img src="${photoMap[current.image]}" alt="${photoAlt[current.image]}"/><div class="page-banner-shade"></div><a class="back-experience" href="/">← Back to the layers</a><div class="page-banner-content"><span>${current.number} / 04 — ${current.tag}</span><h1>${current.title}</h1><p>${current.desc}</p></div><a href="#${current.section}" class="page-down" aria-label="Jelajahi halaman">↓</a>`;document.querySelector('main').prepend(banner);
  const index=chapters.indexOf(current),next=chapters[(index+1)%4];const navigation=document.createElement('section');navigation.className='next-chapter';navigation.innerHTML=`<a href="/">← All layers</a><a href="/${next.id}.html"><small>NEXT LAYER · ${next.number} / 04</small><span>${next.label} ↗</span></a>`;document.querySelector('main').append(navigation);
  const destinations={'#mall':'/mall.html','#directory':'/directory.html','#next':'/whats-next.html','#rewards':'/shopping-program.html'};document.querySelectorAll('a').forEach(a=>{const target=destinations[a.getAttribute('href')];if(target&&a.getAttribute('href')!==`#${current.section}`)a.href=target;});
  document.querySelectorAll('.tenant-image').forEach((el,i)=>el.style.backgroundImage=`url('${photoMap[chapters[i%4].image]}')`);

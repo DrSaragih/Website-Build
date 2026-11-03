@@ -1,55 +1,47 @@
-# 23 Paskal — Four layers, endless possibilities
+# 23 Paskal — A place for every story
 
-Responsive multi-page mall website concept. The landing experience uses four overlapping photographic layers, a sticky scroll stage, independent photo parallax, depth transforms, pointer movement, and reduced-motion support.
+A responsive, multi-page mall website concept with an immersive four-layer introduction and an editorial home page.
 
-Each photographic layer and navigation item opens a dedicated page:
-- `/mall.html`: Mall history, photographic story, brand logos, and visit information.
-- `/directory.html`: Interactive GF / Lantai 1 / Lantai 2 directory with floor-specific plans, synchronized tenant selection, category filters, and search.
-- `/whats-next.html`: Event concepts and details.
-- `/shopping-program.html`: Shopping program concept.
+## Run locally
 
-Pages include a return to the layers and navigation to the next chapter. Native links support browser back/forward and opening pages in new tabs. All five HTML entry points are built for static hosting.
-
-## Development
-
-Node.js 20.19+ or 22.12+.
+Requires Node.js 20.19+ or 22.12+.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Production: `npm run build`. Local production inspection: `npm run preview`.
+Build: `npm run build`. Inspect production locally: `npm run preview`. Vite builds five HTML entry points; deploy the complete `dist` directory to a static host.
 
-## Asset and content notes
+## Pages and features
 
-`public/images/mall-atrium.png`, `mall-exterior.png`, `mall-retail.png`, `mall-garden.png`, and `mall-cafe.png` are locally bundled AI-generated photographic illustrations. They are conceptual mall images, **not real photographs of 23 Paskal**. Replace with approved actual mall photography before official publication. Higgsfield and Magnific were unavailable; these assets were generated with the available image generation tool. The reference site could not be accessed from this environment.
+- `/`: Four photographic parallax layers, a welcome story, dining/fashion/community experience cards, a garden scene, and practical visit links.
+- `/mall.html`: Mall history, an immersive photographic journey, photo stories, brand logos, gallery, FAQ and Google Maps.
+- `/directory.html`: GF / Lantai 1 / Lantai 2 directory with eight units per floor, category filters, tenant search, synchronized list/map selection, and an enlarged floor-plan dialog.
+- `/whats-next.html`: Concept events, event details, photo gallery, FAQ and visitor information.
+- `/shopping-program.html`: Concept shopping program, details, photo gallery, FAQ and visitor information.
 
-Floor plans and tenant assignments are dummy data explicitly authorized for this demo, not the actual mall layout or a verified tenant list. Edit `src/directory-data.js` to update tenant/floor data; schematic unit geometry lives in `src/enhancements.js`. Each floor has eight interactive units. The expanded native dialog supports switching floors and selecting units; selections stay synchronized with the main plan.
+Each chapter gallery supports a native image lightbox, previous/next buttons, wrapping arrow-key navigation and Escape. Normal links support browser back/forward and opening new tabs. Supported browsers add native cross-document view transitions; other browsers keep standard navigation.
 
-Brand SVGs are bundled locally from Simple Icons 16.36.0. See `public/logos/ASSET-CREDITS.md`. Two logo rows move in opposite directions; hover or use the pause button to stop motion. Reduced-motion preferences disable automatic scrolling.
+Chapter headers provide cross-floor search and saved places. Saved places stay in localStorage on the current browser, without an account; unavailable storage falls back to the session. Deep links such as `/directory.html?floor=1&unit=102#directory` highlight a unit. `?category=dining` or `?category=fashion` opens a filtered directory. Unknown parameters are ignored.
 
-The mall page includes a concise history and a reference link. Historical information should be editorially reviewed before an official launch. Events and rewards remain conceptual.
+Google Maps is embedded on chapter pages, with location/directions links and copy-address controls. No API key is needed. External map content requires Internet access and was not verified in this environment. Hours are deliberately not invented.
 
+## Motion and implementation
 
-## Immersive experience and location
+- `src/layers.js`: Continuous hero card transforms, time-based damping, subtle pointer motion, active-layer navigation.
+- `src/enhancements.js`: History, logo rows, floor plans and enlarged map.
+- `src/directory-data.js`: Dummy floor/tenant assignments. Map geometry lives in `enhancements.js`.
+- `src/experience.js`: Chapter imagery, immersive mall story, damped background/foreground parallax, maps.
+- `src/customer.js`: Tenant finder, saved places, FAQ, copy-address and URL selection.
+- `src/editorial.js`: Editorial home content, category links, chapter galleries, reveal animations, and garden parallax.
 
-`src/experience.js` and `src/experience.css` add a full-screen sticky photographic journey with independent background zoom, foreground travel, and moving display typography. Hero cards have stronger scroll depth and pointer parallax. Supporting photo stories use opposing scroll rates. Reduced-motion preferences retain content while disabling the immersive movement.
+Motion honors reduced-motion preferences; keyboard focus reveals animated content. Animation loops stop once settled. Logo rows have pause controls. Layout was checked at 1440, 1024, 768, 390 and 320 pixel widths.
 
-All chapter pages include a Google Maps embed querying **23 Paskal Shopping Center Bandung**, plus Google Maps location and directions links. No API key is required. External map content needs Internet access; the embed and route targets were checked, but Google's external content could not be verified from this environment. Existing links remain available alongside the map.
+## Assets and demo content
 
-Copy spacing was checked at 1440, 1024, 768, 390, and 320 pixel widths. The site's mall photographs are AI-generated concepts, and the floor plans remain the user-authorized dummy layouts.
+Eight images are served as optimized WebP, about 2.5 MB combined versus about 22 MB of PNG originals. PNG files are retained as source assets. Images include the atrium, exterior, retail corridor, garden, cafe, fashion, community music, and shopping scenes. All are AI-generated conceptual photography, **not real photographs of 23 Paskal or actual events**. Higgsfield and Magnific were unavailable; the available image-generation tool created the visuals.
 
+Tenant names, floor positions, unit numbers and plans are user-authorized dummy data. Events and shopping benefits are concepts, not official offers. Historical copy includes a reference link and should receive editorial review before an official launch.
 
-## Visitor tools
-
-`src/customer.js` adds a cross-floor tenant finder on chapter pages, category and keyword search (including Indonesian intent words such as kopi/sepatu), saved places in localStorage, floor/unit deep links, chapter-page FAQ, and copy-address buttons with a selectable-text fallback. Saved places require no account and stay in the current browser; storage failures fall back to the current session.
-
-A link such as `/directory.html?floor=1&unit=102#directory` selects the corresponding floor and highlights its unit. Unknown parameters are ignored. Hours are deliberately not invented; the FAQ directs visitors to check current information in Google Maps. Tenant data remains dummy.
-
-
-## Clean chapter layout
-
-The home page now contains only the four photographic layer introductions and a compact footer. The visit hub, logos, history, maps, FAQ and photo galleries are not rendered on the home page. The Mall contains history, the immersive photo journey, photography, FAQ and visitor information; Directory contains cross-floor search, saved-place controls, floor plans and information; other chapter pages retain their content, FAQ and visitor maps.
-
-Hero parallax uses time-based exponential interpolation and continuous card transforms. Pointer movement is damped and subtle. Its animation loop stops when settled, keeps native page scrolling, and honors reduced-motion changes. Scroll progress is calculated from the actual stage height so each layer remains reachable across screen sizes.
+Brand SVGs are bundled from Simple Icons 16.36.0. Credits and the upstream license are in `public/logos/`. Dummy placement does not verify tenant presence or imply brand partnership.

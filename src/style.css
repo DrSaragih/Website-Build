@@ -5,3 +5,7 @@
 /* Keep decorative parallax layers within the page on narrow screens. */
 body{overflow-x:clip}
 html{overflow-x:clip}.little-star,.reward-star,.event-art i{font-family:Georgia,serif;font-variant-emoji:text}
+
+/* Declare cross-page transitions before deferred page modules load. */
+@view-transition{navigation:auto}::view-transition-old(root){animation:page-out .18s ease both}::view-transition-new(root){animation:page-in .32s ease both}@keyframes page-out{to{opacity:0}}@keyframes page-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none!important}}
